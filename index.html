@@ -13,13 +13,40 @@
     <iframe id="spotify-iframe" src="" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
 
     <script src="https://sdk.scdn.co/spotify-player.js"></script>.
-    <script>
-        window.onSpotifyWebPlaybackSDKReady = () => {
-            var musicUrl = "https://accounts.spotify.com/authorize/?"
-            window.location = musicUrl + "client_id=f2e2d50aac134850a09128c2646b8c0a&response_type=token&redirect_uri=https://danthamaz.github.io/spotifyTest/"
-            var token = "BQCMWJmzWNOG0LQcPDx7PfIvjMJfbk5dOLb56OjM5p_to47_C6mcYr3t2ZSXMQ_lcmPEGacX5U6i0FcT_Baa6PqBmnZMaBCKBZOpAEHyhiTEitqq7KAmuNxBBiYROoSuPUVjivhe6dubLDG8AP2eEGEqeqQtO3mA_A";
+    <script>            
+        // Get the hash of the url
+        const hash = window.location.hash
+            .substring(1)
+            .split('&')
+            .reduce(function (initial, item) {
+                if (item) {
+                    var parts = item.split('=');
+                    initial[parts[0]] = decodeURIComponent(parts[1]);
+                }
+                return initial;
+            }, {});
+        window.location.hash = "";
+        console.log(hash)
 
-            var musicUrl = "https://api.spotify.com/v1/search?query=queen&limit=1&type=artist"
+        // Set token
+        let _token = hash.access_token;
+
+        const authEndpoint = 'https://accounts.spotify.com/authorize';
+
+        // Replace with your app's client ID, redirect URI and desired scopes
+        const clientId = 'f2e2d50aac134850a09128c2646b8c0a';
+        const redirectUri = 'https://danthamaz.github.io/spotifyTest/';
+        const scopes = [
+            'user-top-read'
+        ];
+        // If there is no token, redirect to Spotify authorization
+        if (!_token) {
+            window.location = `${authEndpoint}?client_id=${clientId}&response_type=token&redirect_uri=${redirectUri}`;
+        };
+        window.onSpotifyWebPlaybackSDKReady = () => {
+
+
+            var musicUrl = "https://api.spotify.com/v1/search?query=wilco&limit=1&type=artist"
             $.ajax({
                 url: musicUrl,
                 method: 'GET',
@@ -44,4 +71,5 @@
 
     </script>
 </body>
+
 </html>
